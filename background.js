@@ -7,7 +7,7 @@ function playSound() {
 	audio = document.createElement('audio');
 	document.body.appendChild(audio);
 	audio.autoplay = true;
-	audio.src = chrome.extension.getURL('assets/tada.mp3');
+	audio.src = chrome.runtime.getURL('assets/tada.mp3');
 	audio.play();
 }
 
@@ -29,10 +29,11 @@ function sendTelegramMessage() {
 	}
 }
 
-chrome.extension.onMessage.addListener(function(message, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     if (message && message.type == 'playSound') {
-        playSound();
-		sendTelegramMessage();
+	// cannot play sound in service_worker from Manifest V3
+        //playSound();
+	sendTelegramMessage();
         sendResponse(true);
     }
 });

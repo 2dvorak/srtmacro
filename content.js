@@ -4,12 +4,23 @@ function injectJs(srcFile) {
     document.getElementsByTagName('head')[0].appendChild(scr);
 }
 
-var dsturl1 = "https://etk.srail.co.kr/hpg/hra/01/selectScheduleList.do?pageId=TK0101010000";
+var dsturl1 = "https://etk.srail.kr/hpg/hra/01/selectScheduleList.do?pageId=TK0101010000";
+var dsturl2 = "https://etk.srail.kr/hpg/hra/02/confirmReservationInfo.do?pageId=TK0101030000";
 
+if (document.URL.substring(0, dsturl2.length) == dsturl2) {
+
+	$(document).ready(function() {
+		if (sessionStorage.getItem('macroSucceed') == "true") {
+			playSound();
+			sessionStorage.setItem('macroSucceed', "false");
+		}
+	});
+}
 if (document.URL.substring(0, dsturl1.length) == dsturl1) {
 
 	$(document).ready(function() {
-		injectJs(chrome.extension.getURL('inject.js'));
+		injectJs(chrome.runtime.getURL('inject.js'));
+		console.log('getURL', chrome.runtime.getURL('inject.js'));
 
 		var coachSelected = JSON.parse(sessionStorage.getItem('coachSelected'));
 		var firstSelected = JSON.parse(sessionStorage.getItem('firstSelected'));
@@ -19,9 +30,9 @@ if (document.URL.substring(0, dsturl1.length) == dsturl1) {
 		console.log("first:" + firstSelected);
 
 		if (sessionStorage.getItem('macro') == "true") {
-			$("div.button").append('<a href="#" onclick="macrostop();" style="margin-left:5px;"><img src="' + chrome.extension.getURL('images/btn_stop.png') + '"></a>');
+			$("#search_top_tag").append('<a href="#" onclick="macrostop();" style="margin-left:5px;"><img src="' + chrome.runtime.getURL('images/btn_stop.png') + '"></a>');
 		} else {
-			$("div.button").append('<a href="#" onclick="macro();" style="margin-left:5px;"><img src="' + chrome.extension.getURL('images/btn_start.png') + '"></a>');
+			$("#search_top_tag").append('<a href="#" onclick="macro();" style="margin-left:5px;"><img src="' + chrome.runtime.getURL('images/btn_start.png') + '"></a>');
 		}
 
 		$("<style>")
@@ -79,7 +90,7 @@ if (document.URL.substring(0, dsturl1.length) == dsturl1) {
 						if (coachSpecials.length != 0) {
 							for (j = 0; j < coachSpecials.length; j++) {
 								name = $(coachSpecials[j]).attr('class');
-								if (name == 'button button-02') {
+								if (name == 'btn_small btn_burgundy_dark val_m wx90') {
 									$(coachSpecials[0])[0].click();
 									succeed = true;
 									break;
@@ -116,7 +127,8 @@ if (document.URL.substring(0, dsturl1.length) == dsturl1) {
 					sessionStorage.removeItem('psgInfoPerPrnb3');
 					sessionStorage.removeItem('locSeatAttCd1');
 					sessionStorage.removeItem('rqSeatAttCd1');
-					chrome.extension.sendMessage({type: 'playSound'}, function(data) { });
+					sessionStorage.setItem('macroSucceed', "true");
+					chrome.runtime.sendMessage({type: 'playSound'}, function(data) { });
 				} else {
 					setTimeout(function() { 
 					location.reload();
@@ -127,4 +139,17 @@ if (document.URL.substring(0, dsturl1.length) == dsturl1) {
 			}
 		}
 	});
+}
+
+function playSound() {
+	if (typeof(audio) != "undefined" && audio) {
+		audio.pause();
+		document.body.removeChild(audio);
+		audio = null;
+	}
+	audio = document.createElement('audio');
+	document.body.appendChild(audio);
+	audio.autoplay = true;
+	audio.src = chrome.runtime.getURL('assets/tada.mp3');
+	audio.play();
 }

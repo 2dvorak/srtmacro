@@ -1,28 +1,52 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "SRT Macro",
-  "description": "SRT 자동 예약 매크로",
+  "description": "SRT \uc790\ub3d9 \uc608\uc57d \ub9e4\ud06c\ub85c",
   "version": "1.0.1",
   "permissions": [
-    "https://etk.srail.co.kr/"
+    "notifications"
+  ],
+  "host_permissions": [
+    "https://etk.srail.kr/"
   ],
   "icons": {
-      "128": "images/icon128.png"
+    "128": "images/icon128.png"
   },
-  "content_scripts": [ {
-    "all_frames": true,
-    "js": ["jquery-1.11.0.min.js", "content.js"],
-    "matches": ["https://etk.srail.co.kr/*"],
-    "run_at": "document_end"
-  }],
+  "content_scripts": [
+    {
+      "all_frames": true,
+      "js": [
+        "jquery-1.11.0.min.js",
+        "content.js"
+      ],
+      "matches": [
+        "https://etk.srail.kr/*"
+      ],
+      "run_at": "document_end"
+    }
+  ],
   "background": {
-    "page": "background.html"
+    "service_worker": "background.js"
   },
   "web_accessible_resources": [
-    "inject.js", "images/btn_start.png", "images/btn_stop.png", "assets/tada.mp3"
+    {
+      "resources": [
+        "inject.js",
+        "images/btn_start.png",
+        "images/btn_stop.png",
+        "assets/tada.mp3"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
   ],
   "options_ui": {
-    "page": "options.html",
-	"chrome_style": true
-  }
+    "page": "options.html"
+  },
+  "options_page": "options.html",
+  "content_security_policy": {},
+  "host_permissions": [
+    "https://etk.srail.kr/"
+  ]
 }

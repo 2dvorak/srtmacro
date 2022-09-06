@@ -48,3 +48,22 @@ function macrostop() {
 
 	location.reload();
 }
+var dsturl3 = "https://etk.srail.kr/hpg/hra/03/selectSettleInfo.do?pageId=TK0101040000";
+
+if (document.URL.substring(0, dsturl3.length) == dsturl3) {
+
+		document.querySelector("#Tk_stlCrCrdNo14_checkbox")["checked"] = false;
+		document.querySelector("#Tk_vanPwd1_checkbox")["checked"] = false;
+		document.querySelector("#stlCrCrdNo11")["value"] = "1234";
+		document.querySelector("#stlCrCrdNo12")["value"] = "1234";
+		document.querySelector("#stlCrCrdNo13")["value"] = "1234";
+		document.querySelector("#stlCrCrdNo14")["value"] = "1234";
+		document.querySelector("#crdVlidTrm1M").value = "00";
+		document.querySelector("#crdVlidTrm1Y").value = "11";
+		document.querySelector("#ismtMnthNum1").value = "0";
+		document.querySelector("#vanPwd1").value = "00";
+		document.querySelector("#athnVal1").value = "111111";
+		document.querySelector("#agree1").checked = true;
+		document.querySelector("#requestIssue1").click();
+		window.confirm = function(msg) { return true; }
+}

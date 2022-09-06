@@ -6,28 +6,40 @@ function injectJs(srcFile) {
 
 var dsturl1 = "https://etk.srail.kr/hpg/hra/01/selectScheduleList.do?pageId=TK0101010000";
 var dsturl2 = "https://etk.srail.kr/hpg/hra/02/confirmReservationInfo.do?pageId=TK0101030000";
+var dsturl3 = "https://etk.srail.kr/hpg/hra/03/selectSettleInfo.do?pageId=TK0101040000";
+var dsturl4 = "https://etk.srail.kr/hpg/hra/03/completeSettleInfo.do?pageId=TK0101050000";
+var realConfirm;
 
+if (document.URL.substring(0, dsturl3.length) == dsturl3) {
+
+	$(window).load(function() {
+		injectJs(chrome.runtime.getURL('inject.js'));
+	});
+}
 if (document.URL.substring(0, dsturl2.length) == dsturl2) {
 
 	$(document).ready(function() {
-		if (sessionStorage.getItem('macroSucceed') == "true") {
-			playSound();
-			sessionStorage.setItem('macroSucceed', "false");
-		}
+		playSound();
+	});
+	$(window).load(function() {
+		$(".btn_large.btn_blue_dark.val_m.mgr10")[0].click();
+		var s = $(".btn_large.btn_blue_dark.val_m.mgr10")[0];
+		console.log('s: ', s);
 	});
 }
 if (document.URL.substring(0, dsturl1.length) == dsturl1) {
 
-	$(document).ready(function() {
+	$(window).load(function() {
+		chrome.storage.sync.get(['botToken', 'chatId'], function(items) {
+			console.log(items);
+			chrome.runtime.sendMessage({type: 'setTelegram', botToken: items.botToken, chatId: items.chatId}, function(data) { });
+    });
 		injectJs(chrome.runtime.getURL('inject.js'));
-		console.log('getURL', chrome.runtime.getURL('inject.js'));
 
 		var coachSelected = JSON.parse(sessionStorage.getItem('coachSelected'));
 		var firstSelected = JSON.parse(sessionStorage.getItem('firstSelected'));
 		if (coachSelected == null) coachSelected = [];
 		if (firstSelected == null) firstSelected = [];
-		console.log("coach:" + coachSelected);
-		console.log("first:" + firstSelected);
 
 		if (sessionStorage.getItem('macro') == "true") {
 			$("#search_top_tag").append('<a href="#" onclick="macrostop();" style="margin-left:5px;"><img src="' + chrome.runtime.getURL('images/btn_stop.png') + '"></a>');
@@ -128,7 +140,7 @@ if (document.URL.substring(0, dsturl1.length) == dsturl1) {
 					sessionStorage.removeItem('locSeatAttCd1');
 					sessionStorage.removeItem('rqSeatAttCd1');
 					sessionStorage.setItem('macroSucceed', "true");
-					chrome.runtime.sendMessage({type: 'playSound'}, function(data) { });
+					chrome.runtime.sendMessage({type: 'playSound', botToken: localStorage['botToken'], chatId: localStorage['chatId']}, function(data) { });
 				} else {
 					setTimeout(function() { 
 					location.reload();

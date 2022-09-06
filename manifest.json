@@ -4,7 +4,8 @@
   "description": "SRT \uc790\ub3d9 \uc608\uc57d \ub9e4\ud06c\ub85c",
   "version": "1.0.1",
   "permissions": [
-    "notifications"
+    "notifications",
+    "storage"
   ],
   "host_permissions": [
     "https://etk.srail.kr/"

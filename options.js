@@ -2,8 +2,11 @@ var defaultBotToken = 'Set your telegram bot token';
 var defaultChatId = 'Set your telegram chat id';
 
 function save_options() {
-  localStorage['botToken'] = document.getElementById('bot_token').value;
-  localStorage['chatId'] = document.getElementById('chat_id').value;  
+  var botToken = document.getElementById('bot_token').value;
+  var chatId = document.getElementById('chat_id').value;
+	chrome.storage.sync.set({'botToken': botToken, 'chatId': chatId}, function() {
+		console.log('Settings saved, botToken: ' + botToken + ', chatId: ' + chatId);
+	});
   
   var url = 'https://api.telegram.org/bot' + document.getElementById('bot_token').value + '/sendmessage?chat_id=' + document.getElementById('chat_id').value + '&text=' + encodeURI('Bot connected.');
 		
